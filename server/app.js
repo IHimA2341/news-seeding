@@ -9,4 +9,12 @@ app.get("/api", (req, res) => {
   return res.status(200).send({ endpoints: endpointsJson });
 });
 
+app.get("/*splat", (req, res) => {
+  res.send(404).send({ msg: "Page not found" });
+});
+
+app.use((err, req, res, next) => {
+  res.status(400).send({ msg: err });
+});
+
 module.exports = app;
