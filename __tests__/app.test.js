@@ -5,7 +5,6 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
 const db = require("../db/connection");
 
-/* Set up your beforeEach & afterAll functions here */
 beforeEach(() => {
   return seed(data);
 });
@@ -59,6 +58,16 @@ describe("articles endpoint", () => {
         .expect(200)
         .then(({ body: { article } }) => {
           expect(article.article_id).toEqual(2);
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            body: expect.any(String),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+          });
         });
     });
     test("should return 400 if given an invalid input", () => {
