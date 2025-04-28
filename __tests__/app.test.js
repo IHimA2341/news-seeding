@@ -20,8 +20,33 @@ describe("GET /api", () => {
       .get("/api")
       .expect(200)
       .then(({ body: { endpoints } }) => {
-        console.log(endpoints);
         expect(endpoints).toEqual(endpointsJson);
       });
+  });
+});
+
+describe("topics endpoint", () => {
+  describe("GET /api/topics", () => {
+    test("returns the correct information", () => {
+      return request(app)
+        .get("/api/topics")
+        .expect(200)
+        .then(({ body: { rows } }) => {
+          expect(rows).toEqual([
+            {
+              description: "The man, the Mitch, the legend",
+              slug: "mitch",
+            },
+            { description: "Not dogs", slug: "cats" },
+            {
+              description: "what books are made of",
+              slug: "paper",
+            },
+          ]);
+        });
+    });
+    test("returns 404 if given an invalid endpoint", () => {
+      return request(app).get("/api/topic").expect(404);
+    });
   });
 });
