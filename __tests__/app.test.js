@@ -5,7 +5,6 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
 const db = require("../db/connection");
 
-/* Set up your beforeEach & afterAll functions here */
 beforeEach(() => {
   return seed(data);
 });
@@ -31,8 +30,8 @@ describe("topics endpoint", () => {
       return request(app)
         .get("/api/topics")
         .expect(200)
-        .then(({ body: { rows } }) => {
-          expect(rows).toEqual([
+        .then(({ body: { topics } }) => {
+          expect(topics).toEqual([
             {
               description: "The man, the Mitch, the legend",
               slug: "mitch",
@@ -47,6 +46,35 @@ describe("topics endpoint", () => {
     });
     test("returns 404 if given an invalid endpoint", () => {
       return request(app).get("/api/topic").expect(404);
+    });
+  });
+});
+
+describe("articles endpoint", () => {
+  describe("GET /api/articles/:article_id", () => {
+    test("should return the correct information", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article.article_id).toEqual(2);
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            body: expect.any(String),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+          });
+        });
+    });
+    test("should return 400 if given an invalid input", () => {
+      return request(app).get("/api/articles/aaaaaaaaaa").expect(400);
+    });
+    test("should return 404 if given an id out of range", () => {
+      return request(app).get("/api/articles/100000").expect(404);
     });
   });
 });
