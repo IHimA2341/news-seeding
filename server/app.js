@@ -1,20 +1,25 @@
 const express = require("express");
 const app = express();
 const endpointsJson = require("../endpoints.json");
+const { getAllTopics } = require("./controllers/topics.controllers");
 
 app.use(express.json());
 
 app.get("/api", (req, res) => {
-  console.log(endpointsJson);
   return res.status(200).send({ endpoints: endpointsJson });
 });
 
+app.get("/api/topics", getAllTopics);
+
 app.get("/*splat", (req, res) => {
-  res.send(404).send({ msg: "Page not found" });
+  res.status(404).send({ msg: "Page not found" });
 });
 
 app.use((err, req, res, next) => {
-  res.status(400).send({ msg: err });
+  if (err.msg && err.status) {
+    console.log(err);
+    res.status(err.status).send(err);
+  }
 });
 
 module.exports = app;
