@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const endpointsJson = require("../endpoints.json");
 const { getAllTopics } = require("./controllers/topics.controllers");
+const { getArticleById } = require("./controllers/articles.controllers");
 
 app.use(express.json());
 
@@ -10,6 +11,7 @@ app.get("/api", (req, res) => {
 });
 
 app.get("/api/topics", getAllTopics);
+app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/*splat", (req, res) => {
   res.status(404).send({ msg: "Page not found" });
@@ -17,7 +19,6 @@ app.get("/*splat", (req, res) => {
 
 app.use((err, req, res, next) => {
   if (err.msg && err.status) {
-    console.log(err);
     res.status(err.status).send(err);
   }
 });

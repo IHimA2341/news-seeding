@@ -31,8 +31,8 @@ describe("topics endpoint", () => {
       return request(app)
         .get("/api/topics")
         .expect(200)
-        .then(({ body: { rows } }) => {
-          expect(rows).toEqual([
+        .then(({ body: { topics } }) => {
+          expect(topics).toEqual([
             {
               description: "The man, the Mitch, the legend",
               slug: "mitch",
@@ -47,6 +47,25 @@ describe("topics endpoint", () => {
     });
     test("returns 404 if given an invalid endpoint", () => {
       return request(app).get("/api/topic").expect(404);
+    });
+  });
+});
+
+describe("articles endpoint", () => {
+  describe("GET /api/articles/:article_id", () => {
+    test("should return the correct information", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article.article_id).toEqual(2);
+        });
+    });
+    test("should return 400 if given an invalid input", () => {
+      return request(app).get("/api/articles/aaaaaaaaaa").expect(400);
+    });
+    test("should return 404 if given an id out of range", () => {
+      return request(app).get("/api/articles/100000").expect(404);
     });
   });
 });
