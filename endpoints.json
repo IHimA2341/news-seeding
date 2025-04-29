@@ -55,5 +55,20 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "inserts a comment into the array for the article related to the article id and returns the comment back.",
+    "exampleResponse": {
+      "comment": [
+        {
+          "comment_id": 2,
+          "article_id": 2,
+          "body": "Lorum ipsum donor amet",
+          "votes": 2,
+          "author": "weegembump",
+          "created_at": "2018-05-30T15:59:13.341Z"
+        }
+      ]
+    }
   }
 }

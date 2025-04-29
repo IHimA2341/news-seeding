@@ -19,4 +19,20 @@ const selectCommentsByArticleId = (id) => {
     });
 };
 
-module.exports = { selectCommentsByArticleId };
+const insertCommentsByArticleId = (id, body, username) => {
+  return db
+    .query(
+      "INSERT INTO comments (article_id, body, votes, author) VALUES ($1, $2, 0, $3) RETURNING *",
+      [id, body, username]
+    )
+    .then((data) => {
+      const { rows } = data;
+      console.log(rows);
+      return rows[0];
+    })
+    .catch((err) => {
+      return Promise.reject({ status: 404, msg: "Something went wrong." });
+    });
+};
+
+module.exports = { selectCommentsByArticleId, insertCommentsByArticleId };
