@@ -6,7 +6,6 @@ const selectArticleById = (id) => {
     .then((data) => {
       const { rows } = data;
       if (rows.length === 0) {
-        console.log(0);
         return Promise.reject({ status: 404, msg: "ID not found." });
       }
       return rows[0];
@@ -17,4 +16,17 @@ const selectArticleById = (id) => {
     });
 };
 
-module.exports = { selectArticleById };
+const selectAllArticles = () => {
+  return db.query(
+    "SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(comments.article_id)::INT AS comments_count FROM articles LEFT OUTER JOIN comments ON articles.article_id=comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;"
+  )
+    .then((data) => {
+      const { rows } = data;
+      return rows;
+    })
+    .catch(() => {
+      return Promise.reject({ status: 400, msg: "Invalid query" });
+    });
+};
+
+module.exports = { selectArticleById, selectAllArticles };

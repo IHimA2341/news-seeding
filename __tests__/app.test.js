@@ -77,4 +77,29 @@ describe("articles endpoint", () => {
       return request(app).get("/api/articles/100000").expect(404);
     });
   });
+  describe("GET /api/articles", () => {
+    test("should return the correct information object", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          console.log(articles);
+          expect(articles.length).toEqual(13);
+          expect(articles).toBeSorted("created_at", {
+            descending: true,
+          });
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comments_count: expect.any(Number),
+            });
+          });
+        });
+    });
+  });
 });

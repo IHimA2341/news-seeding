@@ -8,7 +8,7 @@ const selectAllTopics = () => {
       const { rows } = data;
       return rows;
     })
-    .catch((err) => {
+    .catch(() => {
       return Promise.reject({ status: 400, msg: "Invalid query" });
     });
 };
