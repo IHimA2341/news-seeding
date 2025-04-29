@@ -77,6 +77,7 @@ describe("articles endpoint", () => {
       return request(app).get("/api/articles/100000").expect(404);
     });
   });
+
   describe("GET /api/articles", () => {
     test("should return the correct information object", () => {
       return request(app)
@@ -101,6 +102,7 @@ describe("articles endpoint", () => {
         });
     });
   });
+
   describe("GET /api/articles/:article_id/comments", () => {
     test("should give the correct object", () => {
       return request(app)
@@ -128,6 +130,48 @@ describe("articles endpoint", () => {
       return request(app)
         .get("/api/articles/aaaaaaaaaaaaaaaa/comments")
         .expect(400);
+    });
+  });
+
+  describe("POST /api/articles/:article_id/comments", () => {
+    test("should return the correct value and status back", () => {
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send({ username: "lurker", body: "cheese" })
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          expect(comment).toMatchObject({
+            body: expect.any(String),
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            article_id: expect.any(Number),
+          });
+          expect(comment.body).toEqual("cheese");
+          expect(comment.author).toEqual("lurker");
+        });
+    });
+
+    test("should return a 404 if article_id does not exist", () => {
+      return request(app)
+        .post("/api/articles/1000000/comments")
+        .send({ username: "lurker", body: "cheese" })
+        .expect(404);
+    });
+
+    test("should return a 400 if body is empty", () => {
+      return request(app)
+        .post("/api/articles/1000000/comments")
+        .send({ username: "lurker", body: "" })
+        .expect(400);
+    });
+
+    test("should return a 404 if article_id is not an integer", () => {
+      return request(app)
+        .post("/api/articles/aaaaaaaaaaaaaa/comments")
+        .send({ username: "lurker", body: "cheese" })
+        .expect(404);
     });
   });
 });
