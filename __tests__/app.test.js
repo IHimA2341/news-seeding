@@ -83,7 +83,6 @@ describe("articles endpoint", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body: { articles } }) => {
-          console.log(articles);
           expect(articles.length).toEqual(13);
           expect(articles).toBeSorted("created_at", {
             descending: true,
@@ -100,6 +99,35 @@ describe("articles endpoint", () => {
             });
           });
         });
+    });
+  });
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("should give the correct object", () => {
+      return request(app)
+        .get("/api/articles/3/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments.length).toEqual(2);
+          expect(comments).toBeSorted("created_at", { descending: true });
+          comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+            });
+          });
+        });
+    });
+    test("should return 404 if the ID does not exist.", () => {
+      return request(app).get("/api/articles/10000/comments").expect(404);
+    });
+    test("should return 400 if the ID is not an integer", () => {
+      return request(app)
+        .get("/api/articles/aaaaaaaaaaaaaaaa/comments")
+        .expect(400);
     });
   });
 });
