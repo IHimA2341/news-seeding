@@ -58,6 +58,10 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description": "inserts a comment into the array for the article related to the article id and returns the comment back.",
+    "exampleRequest": {
+      "username": "weegembump",
+      "body": "Lorum ipsum donor amet"
+    },
     "exampleResponse": {
       "comment": [
         {
@@ -70,5 +74,9 @@
         }
       ]
     }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "recieves an object with key inc_votes and changes increments the votes on the article related to article_id",
+    "exampleRequest": { "inc_votes": 1 }
   }
 }
