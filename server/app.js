@@ -5,6 +5,7 @@ const { getAllTopics } = require("./controllers/topics.controllers");
 const {
   getArticleById,
   getAllArticles,
+  patchArticleByArticleId,
 } = require("./controllers/articles.controllers");
 
 const {
@@ -26,13 +27,15 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
+app.patch("/api/articles/:article_id", patchArticleByArticleId);
+
 app.get("/*splat", (req, res) => {
   res.status(404).send({ msg: "Page not found" });
 });
 
 app.use((err, req, res, next) => {
   if (err.msg && err.status) {
-    res.status(err.status).send(err);
+    return res.status(err.status).send(err);
   }
 });
 

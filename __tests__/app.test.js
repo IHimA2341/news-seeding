@@ -174,4 +174,40 @@ describe("articles endpoint", () => {
         .expect(404);
     });
   });
+
+  describe("PATCH /api/articles/:article_id", () => {
+    test("should return the correct status and update votes", () => {
+      return request(app)
+        .patch("/api/articles/2")
+        .send({ inc_votes: 100 })
+        .expect(201)
+        .then(() => {
+          return request(app).get("/api/articles/2");
+        })
+        .then(({ body: { article } }) => {
+          expect(article.votes).toEqual(100);
+        });
+    });
+
+    test("should return 400 if the vote is not an integer", () => {
+      return request(app)
+        .patch("/api/articles/2")
+        .send({ inc_votes: "aaaaaaaaaa" })
+        .expect(400);
+    });
+
+    test("should return 400 is the article_id is not an integer", () => {
+      return request(app)
+        .patch("/api/articles/aaaaaaaaaaa")
+        .send({ inc_votes: "aaaaaaaaaa" })
+        .expect(400);
+    });
+
+    test("should return 404 if the article_id does not exist", () => {
+      return request(app)
+        .patch("/api/articles/10000000")
+        .send({ inc_votes: 1000 })
+        .expect(404);
+    });
+  });
 });
