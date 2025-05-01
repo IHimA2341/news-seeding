@@ -1,6 +1,4 @@
-const { Query } = require("pg");
 const db = require("../../db/connection");
-const { sort } = require("../../db/data/test-data/articles");
 
 const selectArticleById = (id) => {
   return db
@@ -18,12 +16,14 @@ const selectArticleById = (id) => {
     });
 };
 
-const selectAllArticles = (order, sort_by) => {
+const selectAllArticles = (order, sort_by, topic) => {
   let query =
-    "SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(comments.article_id)::INT AS comments_count FROM articles LEFT OUTER JOIN comments ON articles.article_id=comments.article_id GROUP BY articles.article_id";
+    "SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(comments.article_id)::INT AS comments_count FROM articles LEFT OUTER JOIN comments ON articles.article_id=comments.article_id";
 
   let order_query = "";
   let sort_by_query = "";
+  let topic_query = "";
+  const group_by_query = " GROUP BY articles.article_id";
 
   if (sort_by) sort_by_query = ` ORDER BY articles.${sort_by}`;
   else sort_by_query = " ORDER BY articles.created_at";
@@ -31,14 +31,18 @@ const selectAllArticles = (order, sort_by) => {
   if (order === "asc") order_query = " ASC";
   else order_query = " DESC";
 
-  query += sort_by_query + order_query;
+  if (topic) topic_query = ` WHERE topic='${topic}'`;
 
+  query += topic_query + group_by_query + sort_by_query + order_query;
   return db
     .query(query)
     .then(({ rows }) => {
+      if (rows.length === 0)
+        return Promise.reject({ msg: "No articles found.", status: 404 });
       return rows;
     })
     .catch((err) => {
+      if (err.msg && err.status) return Promise.reject(err);
       return Promise.reject({ status: 400, msg: "Invalid query" });
     });
 };
