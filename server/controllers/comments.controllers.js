@@ -39,7 +39,6 @@ const deleteCommentByCommentId = (req, res, next) => {
       return res.status(204).send();
     })
     .catch((err) => {
-      console.log(err);
       return next(err);
     });
 };

@@ -81,5 +81,17 @@
   },
   "DELETE /api/comments/:comment_id": {
     "description": "deletes the comment related to the comment id"
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "weegembump",
+          "name": "weeg",
+          "avatar_url": "https://oxzuihixzcuvzxjvn.com"
+        }
+      ]
+    }
   }
 }

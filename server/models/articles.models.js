@@ -42,7 +42,6 @@ const updateArticleByArticleId = (id, inc_votes) => {
       ]);
     })
     .then(({ rows }) => {
-      console.log(rows);
       return rows[0];
     })
     .catch((err) => {

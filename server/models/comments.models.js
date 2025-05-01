@@ -27,7 +27,6 @@ const insertCommentsByArticleId = (id, body, username) => {
     )
     .then((data) => {
       const { rows } = data;
-      console.log(rows);
       return rows[0];
     })
     .catch((err) => {

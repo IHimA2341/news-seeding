@@ -95,11 +95,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       );
       return db.query(commentsToInsert);
     })
-    .then(() => {
-      console.log("Setup complete!");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    .then(() => {})
+    .catch((err) => {});
 };
 module.exports = seed;
