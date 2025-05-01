@@ -184,6 +184,61 @@ describe("articles endpoint", () => {
         });
       });
     });
+
+    describe("topic queries", () => {
+      test("checks if it works with mitch", () => {
+        return request(app)
+          .get("/api/articles?topic=mitch")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles.length).toEqual(12);
+            articles.forEach((article) => {
+              expect(article.topic).toEqual('mitch');
+              expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comments_count: expect.any(Number),
+              });
+            });
+          });
+      });
+
+      test("checks if it works with cats", () => {
+        return request(app)
+          .get("/api/articles")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            return request(app)
+              .get("/api/articles?topic=cats")
+              .expect(200)
+              .then(({ body: { articles } }) => {
+                expect(articles.length).toEqual(1);
+                articles.forEach((article) => {
+                  expect(article.topic).toEqual('cats');
+                  expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    comments_count: expect.any(Number),
+                  });
+                });
+              });
+          });
+      });
+
+      test("returns 404 if topic does not exist", () => {
+        return request(app)
+          .get("/api/articles?topic=aaaaaaaaaaaaaaaaa")
+          .expect(404);
+      });
+    });
   });
 
   describe("GET /api/articles/:article_id/comments", () => {

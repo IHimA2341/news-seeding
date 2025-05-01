@@ -15,7 +15,7 @@ const getArticleById = (req, res, next) => {
 };
 
 const getAllArticles = (req, res, next) => {
-  const { order, sort_by } = req.query;
+  const { order, sort_by, topic } = req.query;
 
   if (order !== "asc" && order !== "desc" && order !== undefined) {
     return next({ status: 400, msg: "Input not valid." });
@@ -36,7 +36,8 @@ const getAllArticles = (req, res, next) => {
     return next({ status: 400, msg: "Input not valid." });
   }
 
-  return selectAllArticles(order, sort_by)
+  return selectAllArticles(order, sort_by, topic
+  )
     .then((data) => {
       res.status(200).send({ articles: data });
     })
