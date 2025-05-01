@@ -101,6 +101,89 @@ describe("articles endpoint", () => {
           });
         });
     });
+
+    describe("sorting queries", () => {
+      describe("order", () => {
+        test("should return the correct information for desc", () => {
+          return request(app)
+            .get("/api/articles?order=desc")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSorted("created_at", {
+                descending: true,
+              });
+            });
+        });
+
+        test("should return the correct information for desc", () => {
+          return request(app)
+            .get("/api/articles?order=asc")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSorted("created_at", {
+                descending: false,
+              });
+            });
+        });
+      });
+
+      describe("sort_by", () => {
+        test("sort by article_id", () => {
+          return request(app)
+            .get("/api/articles?sort_by=article_id")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSorted("article_id", {
+                descending: true,
+              });
+            });
+        });
+
+        test("sort by author", () => {
+          return request(app)
+            .get("/api/articles?sort_by=author")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSorted("author", {
+                descending: true,
+              });
+            });
+        });
+      });
+
+      describe("both queries", () => {
+        test("sort by author ascending", () => {
+          return request(app)
+            .get("/api/articles?sort_by=author&order=asc")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSorted("author", {
+                descending: false,
+              });
+            });
+        });
+        test("sort by article_id", () => {
+          return request(app)
+            .get("/api/articles?sort_by=article_id&order=asc")
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSorted("article_id", {
+                descending: false,
+              });
+            });
+        });
+      });
+
+      describe("fail cases", () => {
+        test("will throw an error if order is not asc or desc", () => {
+          return request(app).get("/api/articles?order=aaaaaaaa").expect(400);
+        });
+
+        test("will throw an error if sort_by is not in the database as a column", () => {
+          return request(app).get("/api/articles?sort_by=desc").expect(400);
+        });
+      });
+    });
   });
 
   describe("GET /api/articles/:article_id/comments", () => {
@@ -228,8 +311,8 @@ describe("comments endpoint", () => {
   });
 });
 
-describe('users endpoint', () => {
-  describe.only("GET /api/users", () => {
+describe("users endpoint", () => {
+  describe("GET /api/users", () => {
     test("should return the correct information object", () => {
       return request(app)
         .get("/api/users")
