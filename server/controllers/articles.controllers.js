@@ -15,7 +15,28 @@ const getArticleById = (req, res, next) => {
 };
 
 const getAllArticles = (req, res, next) => {
-  return selectAllArticles()
+  const { order, sort_by } = req.query;
+
+  if (order !== "asc" && order !== "desc" && order !== undefined) {
+    return next({ status: 400, msg: "Input not valid." });
+  }
+  if (
+    ![
+      "article_id",
+      "title",
+      "topic",
+      "author",
+      "body",
+      "created_at",
+      "votes",
+      "article_img_url",
+    ].includes(sort_by) &&
+    sort_by !== undefined
+  ) {
+    return next({ status: 400, msg: "Input not valid." });
+  }
+
+  return selectAllArticles(order, sort_by)
     .then((data) => {
       res.status(200).send({ articles: data });
     })
@@ -27,7 +48,6 @@ const getAllArticles = (req, res, next) => {
 const patchArticleByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
-
 
   if (typeof inc_votes !== "number" || isNaN(Number(article_id))) {
     return next({
