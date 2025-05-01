@@ -78,5 +78,8 @@
   "PATCH /api/articles/:article_id": {
     "description": "recieves an object with key inc_votes and changes increments the votes on the article related to article_id",
     "exampleRequest": { "inc_votes": 1 }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the comment related to the comment id"
   }
 }

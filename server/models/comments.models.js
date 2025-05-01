@@ -35,4 +35,21 @@ const insertCommentsByArticleId = (id, body, username) => {
     });
 };
 
-module.exports = { selectCommentsByArticleId, insertCommentsByArticleId };
+const deleteComment = (id) => {
+  return db
+    .query("DELETE FROM comments WHERE comment_id=$1 RETURNING *", [id])
+    .then(({ rows }) => {
+      if (rows.length === 0) return Promise.reject({msg: "No ID found", status: 404})
+      return;
+    })
+    .catch((err) => {
+      if (err.status && err.msg) return Promise.reject(err)
+      return Promise.reject({ status: 400, msg: "Something went wrong." });
+    });
+};
+
+module.exports = {
+  selectCommentsByArticleId,
+  insertCommentsByArticleId,
+  deleteComment,
+};

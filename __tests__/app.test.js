@@ -211,3 +211,19 @@ describe("articles endpoint", () => {
     });
   });
 });
+
+describe("comments endpoint", () => {
+  describe("DELETE /api/comments/:comment_id", () => {
+    test("should return the correct status", () => {
+      return request(app).delete("/api/comments/2").expect(204);
+    });
+
+    test("should return 404 if the id does not exist", () => {
+      return request(app).delete("/api/comments/19999999").expect(404);
+    });
+
+    test("should return 400 if the id is not a number", () => {
+      return request(app).delete("/api/comments/aaaaaaaa").expect(400);
+    });
+  });
+});
