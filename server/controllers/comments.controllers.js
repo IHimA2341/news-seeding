@@ -1,6 +1,8 @@
+const db = require("../../db/connection");
 const {
   selectCommentsByArticleId,
   insertCommentsByArticleId,
+  deleteComment,
 } = require("../models/comments.models");
 
 const getCommentsByArticleId = (req, res, next) => {
@@ -26,4 +28,24 @@ const postCommentByArticleId = (req, res, next) => {
     });
 };
 
-module.exports = { getCommentsByArticleId, postCommentByArticleId };
+const deleteCommentByCommentId = (req, res, next) => {
+  const { comment_id } = req.params;
+
+  if (isNaN(Number(comment_id)))
+    return next({ status: 400, msg: "ID is invalid." });
+
+  return deleteComment(comment_id)
+    .then(() => {
+      return res.status(204).send();
+    })
+    .catch((err) => {
+      console.log(err);
+      return next(err);
+    });
+};
+
+module.exports = {
+  getCommentsByArticleId,
+  postCommentByArticleId,
+  deleteCommentByCommentId,
+};
