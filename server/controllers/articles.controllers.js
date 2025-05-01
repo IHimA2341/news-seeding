@@ -37,7 +37,6 @@ const patchArticleByArticleId = (req, res, next) => {
   }
   return updateArticleByArticleId(article_id, inc_votes)
     .then((data) => {
-      console.log(data);
       return res.status(201).send({ article: data });
     })
     .catch((err) => {
