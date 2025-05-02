@@ -1,4 +1,3 @@
-const { errorMonitor } = require("supertest/lib/test");
 const db = require("../../db/connection");
 
 const selectAllTopics = () => {
