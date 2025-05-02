@@ -54,10 +54,11 @@ describe("articles endpoint", () => {
   describe("GET /api/articles/:article_id", () => {
     test("should return the correct information", () => {
       return request(app)
-        .get("/api/articles/2")
+        .get("/api/articles/1")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article.article_id).toEqual(2);
+          expect(article.article_id).toEqual(1);
+          expect(article.comment_count).toEqual(11);
           expect(article).toMatchObject({
             author: expect.any(String),
             title: expect.any(String),
@@ -67,6 +68,7 @@ describe("articles endpoint", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
           });
         });
     });
@@ -193,7 +195,7 @@ describe("articles endpoint", () => {
           .then(({ body: { articles } }) => {
             expect(articles.length).toEqual(12);
             articles.forEach((article) => {
-              expect(article.topic).toEqual('mitch');
+              expect(article.topic).toEqual("mitch");
               expect(article).toMatchObject({
                 author: expect.any(String),
                 title: expect.any(String),
@@ -218,7 +220,7 @@ describe("articles endpoint", () => {
               .then(({ body: { articles } }) => {
                 expect(articles.length).toEqual(1);
                 articles.forEach((article) => {
-                  expect(article.topic).toEqual('cats');
+                  expect(article.topic).toEqual("cats");
                   expect(article).toMatchObject({
                     author: expect.any(String),
                     title: expect.any(String),
